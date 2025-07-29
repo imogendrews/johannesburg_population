@@ -11,6 +11,7 @@ export default function App() {
   const [labelPos, setLabelPos] = useState({ x: 0, y: 0 });
   const [showImage, setShowImage] = useState(false);
 
+
   useEffect(() => {
     let points = [];
     const width = window.innerWidth;
@@ -34,7 +35,7 @@ camera.up.set(0, 0, 1); // Invert the vertical axis
     controls.minPolarAngle = 0;
     controls.dampingFactor = 0.05;
 
-    scene.add(new THREE.AmbientLight(0x404040));
+    scene.add(new THREE.AmbientLight(0xffffff));
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(100, 200, 100);
     scene.add(light);
@@ -77,14 +78,10 @@ camera.up.set(0, 0, 1); // Invert the vertical axis
 
       const vertices = geometry.attributes.position;
 
-      const popScale = d3.scalePow()
-        .exponent(1.8)
-        .domain([
-          Math.max(1, d3.min(points, (d) => d.population)),
-          d3.max(points, (d) => d.population),
-        ])
-        .range([400, 1000])
-        .clamp(true);
+    const popScale = d3.scaleLinear()
+  .domain([d3.min(points, d => d.population), d3.max(points, d => d.population)])
+  .range([0, 1000]);
+
 
       for (let i = 0; i < vertices.count; i++) {
         const x = vertices.getX(i);
@@ -102,31 +99,44 @@ camera.up.set(0, 0, 1); // Invert the vertical axis
           denominator += weight;
         });
         const avgPop = Math.max(1, numerator / denominator);
-        vertices.setY(i, popScale(avgPop));
+        const baseHeight = 500;
+        vertices.setY(i, popScale(avgPop) + baseHeight);
       }
 
       geometry.computeVertexNormals();
 
-      const colors = [];
-      for (let i = 0; i < vertices.count; i++) {
-        const y = vertices.getY(i);
-        const color = new THREE.Color(d3.interpolateInferno(y / 1000));
-        colors.push(color.r, color.g, color.b);
-      }
-      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+// Get min and max Y from vertices
+let yMin = Infinity, yMax = -Infinity;
+for (let i = 0; i < vertices.count; i++) {
+  const y = vertices.getY(i);
+  if (y < yMin) yMin = y;
+  if (y > yMax) yMax = y;
+}
+
+const colors = [];
+for (let i = 0; i < vertices.count; i++) {
+  const y = vertices.getY(i);
+  // Normalize y between 0 and 1
+  const t = (y - yMin) / (yMax - yMin);
+  const color = new THREE.Color(d3.interpolateInferno(t));
+  colors.push(color.r, color.g, color.b);
+}
+geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
       const material = new THREE.MeshStandardMaterial({
-        vertexColors: true,
+      
         flatShading: true,
         metalness: 0.5,
         alphaHash: true,
         roughness: 0.7,
+        vertexColors: true,
         side: THREE.DoubleSide,
       });
 
       const terrainMesh = new THREE.Mesh(geometry, material);
       terrainMeshRef.mesh = terrainMesh;
       scene.add(terrainMesh);
+      
 
       points.forEach(({ x, y, population, WardLabel }) => {
         let nearestIdx = 0;
@@ -204,7 +214,9 @@ camera.up.set(0, 0, 1); // Invert the vertical axis
             }
           });
 
-          if (nearest) {
+           const maxDistanceSq = 500 ; // example: 500 units radius
+
+          if (nearest && minDist < maxDistanceSq) {
              d3.json('/data/ward_suburbs_6.json').then((suburbs) => {
                   const wardNumber = nearest.WardLabel.slice(4, 7); // 'Ward 001' -> 1
  
@@ -218,11 +230,18 @@ if (suburbList && suburbList.length > 0) {
             setLabelPos({ x: event.clientX, y: event.clientY });
 
             }
-          })
-          }
+          });
+          }      else {
+      // Clear popup if click outside radius
+      setSelectedWard(null);
+    }
+  } else {
+    // No terrain intersection — clear popup
+    setSelectedWard(null);
+  }
         }
       }
-    }
+    
 
     renderer.domElement.addEventListener('pointerdown', onPointerDown);
     renderer.domElement.addEventListener('pointermove', onPointerMove);
@@ -283,8 +302,8 @@ if (suburbList && suburbList.length > 0) {
           style={{
                opacity: 0.5, // <-- Add this line to set transparency
             position: 'fixed',
-            top: '20%',
-            left: '10%',
+            top: '25%',
+            left: '33%',
             width: '300px',
             height: 'auto',
             borderRadius: '8px',
