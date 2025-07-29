@@ -10,7 +10,7 @@ export default function App() {
   const [selectedWard, setSelectedWard] = useState(null);
   const [labelPos, setLabelPos] = useState({ x: 0, y: 0 });
   const [showImage, setShowImage] = useState(false);
-
+           let imageMesh;
 
   useEffect(() => {
     let points = [];
@@ -136,6 +136,27 @@ geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
       const terrainMesh = new THREE.Mesh(geometry, material);
       terrainMeshRef.mesh = terrainMesh;
       scene.add(terrainMesh);
+
+
+
+const textureLoader = new THREE.TextureLoader();
+textureLoader.load('/images/joburg.png', (texture) => {
+  const imageWidth = 600;
+  const imageHeight = 400;
+
+  const imageGeometry = new THREE.PlaneGeometry(imageWidth, imageHeight);
+  const imageMaterial = new THREE.MeshBasicMaterial({
+    map: texture,
+    transparent: true,
+    opacity: 0.7,
+    depthTest: false // Ensures it's always rendered on top
+  });
+
+  imageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
+  imageMesh.position.set(0, yMax + 1000, 0); // Adjust Y so it's above terrain
+  imageMesh.lookAt(camera.position); // Face the camera initially
+  scene.add(imageMesh);
+});
       
 
       points.forEach(({ x, y, population, WardLabel }) => {
@@ -153,7 +174,7 @@ geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
         const peakHeight = vertices.getY(nearestIdx);
 
-       
+      
         
 
         const canvas = document.createElement('canvas');
@@ -241,7 +262,8 @@ if (suburbList && suburbList.length > 0) {
   }
         }
       }
-    
+
+
 
     renderer.domElement.addEventListener('pointerdown', onPointerDown);
     renderer.domElement.addEventListener('pointermove', onPointerMove);
@@ -251,6 +273,10 @@ if (suburbList && suburbList.length > 0) {
     const animate = () => {
       requestAnimationFrame(animate);
       controls.update();
+        if (imageMesh) {
+    imageMesh.lookAt(camera.position);
+  }
+
       renderer.render(scene, camera);
     };
     animate();
@@ -281,10 +307,17 @@ if (suburbList && suburbList.length > 0) {
       />
 
       <button
-        onClick={() => setShowImage(!showImage)}
+        onClick={() => {
+  setShowImage(prev => {
+    const newVal = !prev;
+    if (imageMesh) imageMesh.visible = newVal;
+    return newVal;
+  });
+}}
+
         style={{
           position: 'fixed',
-          top: 20,
+          top: 60,
           right: 20,
           zIndex: 100,
           padding: '10px 20px',
@@ -292,10 +325,11 @@ if (suburbList && suburbList.length > 0) {
           cursor: 'pointer',
         }}
       >
-        {showImage ? 'Hide Image' : 'Show Image'}
+        {showImage ? 'Hide Johannesburg' : 'Show Johannesburg map'}
       </button>
 
       {showImage && (
+        <>
         <img
           src="/images/joburg.png"
           alt="Overlay"
@@ -311,6 +345,22 @@ if (suburbList && suburbList.length > 0) {
             zIndex: 50,
           }}
         />
+          <img
+          src="/images/key.png"
+          alt="Overlay"
+          style={{
+   
+            position: 'fixed',
+            top: '25%',
+            left: '7%',
+            width: '200px',
+            height: 'auto',
+            borderRadius: '8px',
+            boxShadow: '0 0 10px rgba(0,0,0,0.5)',
+            zIndex: 50,
+          }}
+        />
+        </>
       )}
 
       {selectedWard && (
