@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom';
 
 import JoburgVis from './Joburg_vis';
+import ImageToggleScene from './Test';
 import Info from './Info';
 
 function Nav() {

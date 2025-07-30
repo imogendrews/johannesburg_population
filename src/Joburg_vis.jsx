@@ -3,39 +3,42 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { geoMercator, geoCentroid } from 'd3-geo';
 import * as d3 from 'd3';
-import { sub } from 'three/tsl';
-import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function JoburgVis() {
-      const navigate = useNavigate();
-  const location = useLocation();
-  const mountRef = useRef();
+
   const [selectedWard, setSelectedWard] = useState(null);
   const [labelPos, setLabelPos] = useState({ x: 0, y: 0 });
   const [showImage, setShowImage] = useState(false);
-  const [showInfo, setShowInfo] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false);
-         const imageMeshRef = useRef(null);
-         const imageLoadedRef = useRef(false);
 
-
+    const mountRef = useRef();
+  const imageMeshRef = useRef();
+  const rendererRef = useRef();
+  const sceneRef = useRef();
+  const cameraRef = useRef();
 
   useEffect(() => {
     let points = [];
     const width = window.innerWidth;
     const height = window.innerHeight;
 
+    // Creates scene
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, width / height, 1, 10000);
+    sceneRef.current = scene;
+    //Set up camera
+    const camera = new THREE.PerspectiveCamera(100, width / height, 1, 10000);
     camera.position.set(0, 2000, 0);
-camera.up.set(0, 0, 1); // Invert the vertical axis
-
+    camera.up.set(0, 0, 1); 
     camera.lookAt(0, 0, 0);
+    cameraRef.current = camera;
 
+    // Set up renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
     mountRef.current.appendChild(renderer.domElement);
+    rendererRef.current = renderer; 
 
+    // Orbit controls set up
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.target.set(0, 0, 0);
@@ -43,15 +46,18 @@ camera.up.set(0, 0, 1); // Invert the vertical axis
     controls.minPolarAngle = 0;
     controls.dampingFactor = 0.05;
 
+    // Lighting setup 
     scene.add(new THREE.AmbientLight(0xffffff));
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(100, 200, 100);
     scene.add(light);
 
+    // Raycaster for the mouse clicks
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     const terrainMeshRef = { mesh: null };
 
+    // Load GeoJSON data and create the terrain
     d3.json('/data/joburg_pop_25_july.json').then((geoData) => {
       const projection = geoMercator().fitExtent([[0, 0], [1000000, 1000000]], geoData);
 
@@ -69,7 +75,7 @@ camera.up.set(0, 0, 1); // Invert the vertical axis
       points.forEach((p) => {
         p.x -= xMid;
         p.y -= yMid;
-          p.x = -p.x; // 👈 Flip after centering
+          p.x = -p.x; 
       });
 
       const planeWidth = d3.extent(xs)[1] - d3.extent(xs)[0];
@@ -113,7 +119,7 @@ camera.up.set(0, 0, 1); // Invert the vertical axis
 
       geometry.computeVertexNormals();
 
-// Get min and max Y from vertices
+
 let yMin = Infinity, yMax = -Infinity;
 for (let i = 0; i < vertices.count; i++) {
   const y = vertices.getY(i);
@@ -124,7 +130,7 @@ for (let i = 0; i < vertices.count; i++) {
 const colors = [];
 for (let i = 0; i < vertices.count; i++) {
   const y = vertices.getY(i);
-  // Normalize y between 0 and 1
+
   const t = (y - yMin) / (yMax - yMin);
   const color = new THREE.Color(d3.interpolateInferno(t));
   colors.push(color.r, color.g, color.b);
@@ -145,13 +151,6 @@ geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
       terrainMeshRef.mesh = terrainMesh;
       scene.add(terrainMesh);
 
-const geometryTest = new THREE.PlaneGeometry(5, 5);
-const materialTest = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-const meshTest = new THREE.Mesh(geometryTest, materialTest);
-scene.add(meshTest);
-meshTest.visible = true;
-
-
 
 const textureLoader = new THREE.TextureLoader();
 textureLoader.load('/images/joburg.png', (texture) => {
@@ -161,68 +160,67 @@ textureLoader.load('/images/joburg.png', (texture) => {
   const imageGeometry = new THREE.PlaneGeometry(imageWidth, imageHeight);
   const imageMaterial = new THREE.MeshBasicMaterial({
     map: texture,
+      side: THREE.DoubleSide ,
     transparent: true,
-    opacity: 0.7,
-    depthTest: false, // Ensures it's always rendered on top
-      side: THREE.DoubleSide // <-- Add this
+    opacity: 0,
+    
   });
 
   const imageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
-  imageMesh.position.set(0, yMax -100 , 0); // Adjust Y so it's above terrain
-  imageMesh.lookAt(camera.position); // Face the camera initially
-imageMesh.rotation.z = Math.PI; // 180° flip vertically
-console.log('show iamge', showImage)
+  imageMesh.position.set(0, yMax -100 , 0); 
+  imageMesh.lookAt(camera.position); 
+imageMesh.rotation.z = Math.PI; 
 
 
+
+
+  imageMeshRef.current = imageMesh;  
   scene.add(imageMesh);
-  imageMesh.visible = showImage; 
-    imageMeshRef.current = imageMesh
-    console.log('Image mesh added to scene:', imageMesh);
-console.log('Initial visibility:', imageMesh.visible);
+  console.log("Scene children after adding mesh:", imageMesh.visible);
+ 
 
-      setImageLoaded(true); // Add this line
+    
+                
+
+      setImageLoaded(true);
 });
+        rendererRef.current.scene = scene;
+    rendererRef.current.camera = camera;
+
+     // The below code was commented out to avoid cluttering the scene with text sprites:
+
+      // points.forEach(({ x, y, population, WardLabel }) => {
+      //   let nearestIdx = 0;
+      //   let minDist = Infinity;
+      //   for (let i = 0; i < vertices.count; i++) {
+      //     const vx = vertices.getX(i);
+      //     const vz = vertices.getZ(i);
+      //     const dist = (vx - x) ** 2 + (vz - y) ** 2;
+      //     if (dist < minDist) {
+      //       minDist = dist;
+      //       nearestIdx = i;
+      //     }
+      //   }
+        // const peakHeight = vertices.getY(nearestIdx);
+        // const canvas = document.createElement('canvas');
+        // canvas.width = 256;
+        // canvas.height = 100;
+        // const ctx = canvas.getContext('2d');
+        // ctx.fillStyle = 'white';
+        // ctx.font = '30px Arial';
+        // ctx.textAlign = 'center';
+        // ctx.textBaseline = 'middle';
       
+        // ctx.fillText(`Ward: ${WardLabel}`, canvas.width / 2, 40);
+        // ctx.fillText(`Pop: ${population.toLocaleString()}`, canvas.width / 2, 70);
+        // const texture = new THREE.CanvasTexture(canvas);
+        // const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true });
+        // const sprite = new THREE.Sprite(spriteMaterial);
+        // sprite.scale.set(30, 10, 1);
+        // sprite.position.set(x, peakHeight + 20, y);
+        // scene.add(sprite);
 
-      points.forEach(({ x, y, population, WardLabel }) => {
-        let nearestIdx = 0;
-        let minDist = Infinity;
-        for (let i = 0; i < vertices.count; i++) {
-          const vx = vertices.getX(i);
-          const vz = vertices.getZ(i);
-          const dist = (vx - x) ** 2 + (vz - y) ** 2;
-          if (dist < minDist) {
-            minDist = dist;
-            nearestIdx = i;
-          }
-        }
-
-        const peakHeight = vertices.getY(nearestIdx);
-
-      
-        
-
-        const canvas = document.createElement('canvas');
-        canvas.width = 256;
-        canvas.height = 100;
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = 'white';
-        ctx.font = '30px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-       
-        ctx.fillText(`Ward: ${WardLabel}`, canvas.width / 2, 40);
-        ctx.fillText(`Pop: ${population.toLocaleString()}`, canvas.width / 2, 70);
-
-
-        const texture = new THREE.CanvasTexture(canvas);
-        const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true });
-        const sprite = new THREE.Sprite(spriteMaterial);
-        sprite.scale.set(30, 10, 1);
-        sprite.position.set(x, peakHeight + 20, y);
-        scene.add(sprite);
-        
-      });
+      // });
     
     });
   
@@ -296,13 +294,17 @@ if (suburbList && suburbList.length > 0) {
     window.addEventListener('pointerup', onPointerUp);
 
     const animate = () => {
+
       requestAnimationFrame(animate);
       controls.update();
-
+      if (imageMeshRef.current) {
+        imageMeshRef.current.lookAt(camera.position);
+      }
 
       renderer.render(scene, camera);
     };
     animate();
+
 
     return () => {
       renderer.domElement.removeEventListener('pointerdown', onPointerDown);
@@ -314,24 +316,23 @@ if (suburbList && suburbList.length > 0) {
     };
   }, []);
 
-useEffect(() => {
-
-    if (imageMeshRef.current && imageLoaded) {
-      imageMeshRef.current.visible = showImage;
-      console.log('Toggled visibility after timeout:', showImage);
-    } else {
-      console.log('Mesh not ready yet:', imageMeshRef.current);
+  useEffect(() => {
+    if (imageMeshRef.current) {
+      console.log('imageMeshRef.current', imageMeshRef.current.material.opacity);
+      imageMeshRef.current.material.opacity = showImage ? 1 : 0;
+      imageMeshRef.current.material.transparent = true;
     }
-
-
-
-}, [showImage, imageLoaded]);
+    if (rendererRef.current && sceneRef.current && cameraRef.current) {
+      rendererRef.current.render(sceneRef.current, cameraRef.current);
+    }
+  }, [showImage]);
 
 
 
 
   return (
     <>
+    
       <div
         ref={mountRef}
         tabIndex={0}
@@ -366,7 +367,21 @@ useEffect(() => {
 
       {showImage && (
         <>
-        
+        <img
+          src="/images/joburg.png"
+          alt="Overlay"
+          style={{
+   
+            position: 'fixed',
+            top: '10%',
+            left: '30%',
+            width: '500px',
+            height: 'auto',
+            borderRadius: '8px',
+            boxShadow: '0 0 10px rgba(0,0,0,0.5)',
+            zIndex: 50,
+          }}
+        />
           <img
           src="/images/key.png"
           alt="Overlay"
