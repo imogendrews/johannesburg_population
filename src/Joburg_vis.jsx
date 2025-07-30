@@ -4,13 +4,21 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { geoMercator, geoCentroid } from 'd3-geo';
 import * as d3 from 'd3';
 import { sub } from 'three/tsl';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-export default function App() {
+export default function JoburgVis() {
+      const navigate = useNavigate();
+  const location = useLocation();
   const mountRef = useRef();
   const [selectedWard, setSelectedWard] = useState(null);
   const [labelPos, setLabelPos] = useState({ x: 0, y: 0 });
   const [showImage, setShowImage] = useState(false);
-           let imageMesh;
+  const [showInfo, setShowInfo] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false);
+         const imageMeshRef = useRef(null);
+         const imageLoadedRef = useRef(false);
+
+
 
   useEffect(() => {
     let points = [];
@@ -137,25 +145,42 @@ geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
       terrainMeshRef.mesh = terrainMesh;
       scene.add(terrainMesh);
 
+const geometryTest = new THREE.PlaneGeometry(5, 5);
+const materialTest = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+const meshTest = new THREE.Mesh(geometryTest, materialTest);
+scene.add(meshTest);
+meshTest.visible = true;
+
 
 
 const textureLoader = new THREE.TextureLoader();
 textureLoader.load('/images/joburg.png', (texture) => {
-  const imageWidth = 600;
-  const imageHeight = 400;
+  const imageWidth = 1300;
+  const imageHeight = 1500;
 
   const imageGeometry = new THREE.PlaneGeometry(imageWidth, imageHeight);
   const imageMaterial = new THREE.MeshBasicMaterial({
     map: texture,
     transparent: true,
     opacity: 0.7,
-    depthTest: false // Ensures it's always rendered on top
+    depthTest: false, // Ensures it's always rendered on top
+      side: THREE.DoubleSide // <-- Add this
   });
 
-  imageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
-  imageMesh.position.set(0, yMax + 1000, 0); // Adjust Y so it's above terrain
+  const imageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
+  imageMesh.position.set(0, yMax -100 , 0); // Adjust Y so it's above terrain
   imageMesh.lookAt(camera.position); // Face the camera initially
+imageMesh.rotation.z = Math.PI; // 180° flip vertically
+console.log('show iamge', showImage)
+
+
   scene.add(imageMesh);
+  imageMesh.visible = showImage; 
+    imageMeshRef.current = imageMesh
+    console.log('Image mesh added to scene:', imageMesh);
+console.log('Initial visibility:', imageMesh.visible);
+
+      setImageLoaded(true); // Add this line
 });
       
 
@@ -273,9 +298,7 @@ if (suburbList && suburbList.length > 0) {
     const animate = () => {
       requestAnimationFrame(animate);
       controls.update();
-        if (imageMesh) {
-    imageMesh.lookAt(camera.position);
-  }
+
 
       renderer.render(scene, camera);
     };
@@ -290,6 +313,22 @@ if (suburbList && suburbList.length > 0) {
       }
     };
   }, []);
+
+useEffect(() => {
+
+    if (imageMeshRef.current && imageLoaded) {
+      imageMeshRef.current.visible = showImage;
+      console.log('Toggled visibility after timeout:', showImage);
+    } else {
+      console.log('Mesh not ready yet:', imageMeshRef.current);
+    }
+
+
+
+}, [showImage, imageLoaded]);
+
+
+
 
   return (
     <>
@@ -306,45 +345,28 @@ if (suburbList && suburbList.length > 0) {
         }}
       />
 
-      <button
-        onClick={() => {
-  setShowImage(prev => {
-    const newVal = !prev;
-    if (imageMesh) imageMesh.visible = newVal;
-    return newVal;
-  });
-}}
 
-        style={{
-          position: 'fixed',
-          top: 60,
-          right: 20,
-          zIndex: 100,
-          padding: '10px 20px',
-          fontSize: '16px',
-          cursor: 'pointer',
-        }}
-      >
-        {showImage ? 'Hide Johannesburg' : 'Show Johannesburg map'}
-      </button>
+    <button
+  onClick={() => setShowImage(prev => !prev)}
+   disabled={!imageLoaded}
+  style={{
+    position: 'fixed',
+    top: 60,
+    right: 20,
+    zIndex: 100,
+    padding: '10px 20px',
+    fontSize: '16px',
+    cursor: 'pointer',
+  }}
+>
+  {showImage ? 'Hide Johannesburg' : 'Show Johannesburg map'}
+</button>
+ 
+      
 
       {showImage && (
         <>
-        <img
-          src="/images/joburg.png"
-          alt="Overlay"
-          style={{
-               opacity: 0.5, // <-- Add this line to set transparency
-            position: 'fixed',
-            top: '25%',
-            left: '33%',
-            width: '300px',
-            height: 'auto',
-            borderRadius: '8px',
-            boxShadow: '0 0 10px rgba(0,0,0,0.5)',
-            zIndex: 50,
-          }}
-        />
+        
           <img
           src="/images/key.png"
           alt="Overlay"

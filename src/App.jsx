@@ -4,47 +4,45 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  Link,
   useLocation,
+  useNavigate,
 } from 'react-router-dom';
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarCollapse,
-  NavbarLink,
-  NavbarToggle,
-} from 'flowbite-react';
 
 import JoburgVis from './Joburg_vis';
 import Info from './Info';
 
-// NavbarLink doesn't support <Link> internally, so we conditionally style it
 function Nav() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+    const toggleInfo = () => {
+    if (location.pathname === '/info') {
+
+      console.log('map', location.pathname)
+      navigate('/');
+    } else {
+      console.log('info', location.pathname)
+      navigate('/info');
+    }
+  };
 
   return (
-    <Navbar fluid rounded className="fixed top-0 left-0 right-0 z-50" >
-      {/* <NavbarBrand href="#">
-        <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-          Johannesburg Project
-        </span>
-      </NavbarBrand> */}
-      <NavbarToggle />
-      <NavbarCollapse>
-        <NavbarLink
-          as="div"
-          active={location.pathname === '/'}
-        >
-          <Link to="/">Visualisation</Link>
-        </NavbarLink>
-        <NavbarLink
-          as="div"
-          active={location.pathname === '/info'}
-        >
-          <Link to="/info">Info</Link>
-        </NavbarLink>
-      </NavbarCollapse>
-    </Navbar>
+    <>
+      <button
+        onClick={() => toggleInfo()}
+        style={{
+          position: 'fixed',
+          top: 100,
+          right: 20,
+          zIndex: 100,
+          padding: '10px 20px',
+          fontSize: '16px',
+          cursor: 'pointer',
+        }}
+      >
+     {location.pathname === '/info' ? 'Back to Map' : 'Go to Info'}
+      </button>
+    </>
   );
 }
 
@@ -62,9 +60,14 @@ export default function App() {
   );
 }
 
-// Mount app
 const container = document.getElementById('root');
-if (!container._reactRoot) {
-  container._reactRoot = ReactDOM.createRoot(container);
+
+// Create a global variable to store the root outside of the window or container if needed
+let root = window._reactRoot;
+
+if (!root) {
+  root = ReactDOM.createRoot(container);
+  window._reactRoot = root;
 }
-container._reactRoot.render(<App />);
+
+root.render(<App />);
