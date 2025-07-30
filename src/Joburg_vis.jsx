@@ -332,7 +332,7 @@ if (suburbList && suburbList.length > 0) {
 
   return (
     <>
-    
+
       <div
         ref={mountRef}
         tabIndex={0}
@@ -345,15 +345,14 @@ if (suburbList && suburbList.length > 0) {
           left: 0,
         }}
       />
-
-
+     
     <button
   onClick={() => setShowImage(prev => !prev)}
    disabled={!imageLoaded}
   style={{
     position: 'fixed',
     top: 60,
-    right: 20,
+    right: 70,
     zIndex: 100,
     padding: '10px 20px',
     fontSize: '16px',
@@ -371,11 +370,11 @@ if (suburbList && suburbList.length > 0) {
           src="/images/joburg.png"
           alt="Overlay"
           style={{
-   
+        
             position: 'fixed',
-            top: '10%',
-            left: '30%',
-            width: '500px',
+            top: '50%',
+            left: '15%',
+            width: '250px',
             height: 'auto',
             borderRadius: '8px',
             boxShadow: '0 0 10px rgba(0,0,0,0.5)',
@@ -388,9 +387,9 @@ if (suburbList && suburbList.length > 0) {
           style={{
    
             position: 'fixed',
-            top: '25%',
-            left: '7%',
-            width: '200px',
+            top: '20%',
+            left: '20%',
+            width: '180px',
             height: 'auto',
             borderRadius: '8px',
             boxShadow: '0 0 10px rgba(0,0,0,0.5)',

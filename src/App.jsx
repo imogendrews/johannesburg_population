@@ -9,7 +9,6 @@ import {
 } from 'react-router-dom';
 
 import JoburgVis from './Joburg_vis';
-import ImageToggleScene from './Test';
 import Info from './Info';
 
 function Nav() {
@@ -29,12 +28,13 @@ function Nav() {
 
   return (
     <>
+    
       <button
         onClick={() => toggleInfo()}
         style={{
           position: 'fixed',
-          top: 100,
-          right: 20,
+          top: 120,
+          right: 120,
           zIndex: 100,
           padding: '10px 20px',
           fontSize: '16px',

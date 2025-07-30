@@ -2,7 +2,41 @@
 export default function Info() {
   return (
     <div>
-      <h1 style={{ color: 'white' }}>Info</h1>
+      <h1 style={{ fontWeight: 'bold', color: 'white' }}>Info</h1>
+
+<h3 style={{ fontWeight: 'bold' }}>How To</h3>
+      <p>To use this visualization, simply navigate through the 3D terrain to explore the population distribution across different wards in Johannesburg. You can click on the terrain to get more information about a specific ward or click on 'Show Map'
+to toggle the visibility of the map overlay. The map provides a reference for understanding the geographical context of the population data. Below is an image of the map with the overlay directly ontop of it</p>
+      <div style={{
+        display: 'flex',
+
+        justifyContent: 'center',
+
+        flexWrap: 'wrap'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5em', margin: '2em 0' }}></div>
+      <img
+        src="/images/key_joburg.png"
+        alt="Overlay"
+        style={{
+      
+          top: '50%',
+          left: '13%',
+          width: '700px',
+          height: 'auto',
+          borderRadius: '8px',
+          boxShadow: '0 0 10px rgba(0,0,0,0.5)',
+        }}
+      />
+      </div>
+<p>
+  For those unfamiliar with Johannesburg, the city is marked by stark contrasts shaped by its complex history. The largest and most well-known townships include Soweto, Alexandra, Diepsloot, Orange Farm, and Lenasia—each with rich cultural significance and unique identities. Other major township areas such as Tembisa and Katlehong also play important roles in the city’s social fabric. These areas were historically formed under apartheid spatial planning and remain central to Johannesburg’s urban life today.  
+  <br></br>
+  In contrast, the more affluent suburbs include Rosebank, Sandton, Parktown North, and Parkview, as well as areas like Houghton, Hyde Park, Bryanston, and Melrose Arch—known for their upscale homes, business districts, and leafy streets. These neighbourhoods highlight the city’s economic power and its ongoing evolution. 
+</p>
+
+      <h3 style={{ fontWeight: 'bold' }}>Background</h3>
+
       <p>I decided to create a heightmap-based population data visualization of Johannesburg, the city where I grew up. For those unfamiliar with Johannesburg, it is the largest city in South Africa and the country’s economic hub. South Africa is widely recognized as one of the most unequal societies in the world — a legacy of apartheid, which officially ended only 30 years ago. This context is well explained in a paper by Chirisa and Matamanda (2019), where they reference Harrison (2006), who described that:
 </p>
 
