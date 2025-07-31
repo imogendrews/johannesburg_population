@@ -22,23 +22,23 @@ export default function JoburgVis() {
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    // Creates scene
+
     const scene = new THREE.Scene();
     sceneRef.current = scene;
-    //Set up camera
+   
     const camera = new THREE.PerspectiveCamera(100, width / height, 1, 10000);
     camera.position.set(0, 2000, 0);
     camera.up.set(0, 0, 1); 
     camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
 
-    // Set up renderer
+ 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
     mountRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer; 
 
-    // Orbit controls set up
+  
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.target.set(0, 0, 0);
@@ -48,7 +48,7 @@ export default function JoburgVis() {
     controls.maxDistance = 3000;
 controls.minDistance = 1000;
 
-    // Lighting setup 
+   
     scene.add(new THREE.AmbientLight(0xffffff));
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(100, 200, 100);
@@ -64,6 +64,7 @@ controls.minDistance = 1000;
       const projection = geoMercator().fitExtent([[0, 0], [1000000, 1000000]], geoData);
 
       points = geoData.features.map((feature) => {
+        // used geoCentroid to calculate the center point of each shape
         const [x, y] = projection(geoCentroid(feature));
         const pop = feature.properties._sum || 100;
         const label = feature.properties.WardLabel || 'Unknown';
@@ -94,6 +95,7 @@ controls.minDistance = 1000;
 
       const vertices = geometry.attributes.position;
 
+      // Calculate population-based heights
     const popScale = d3.scaleLinear()
   .domain([d3.min(points, d => d.population), d3.max(points, d => d.population)])
   .range([0, 1000]);
@@ -134,13 +136,13 @@ for (let i = 0; i < vertices.count; i++) {
   const y = vertices.getY(i);
 
   const t = (y - yMin) / (yMax - yMin);
+  // Use d3.interpolateInferno for color mapping
   const color = new THREE.Color(d3.interpolateInferno(t));
   colors.push(color.r, color.g, color.b);
 }
 geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
       const material = new THREE.MeshStandardMaterial({
-      
         flatShading: true,
         metalness: 0.5,
         alphaHash: true,
@@ -153,43 +155,34 @@ geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
       terrainMeshRef.mesh = terrainMesh;
       scene.add(terrainMesh);
 
+// NOTE: The below code was for the map overlay which I was not able to get working properly:
 
-const textureLoader = new THREE.TextureLoader();
-textureLoader.load('/images/joburg.png', (texture) => {
-  const imageWidth = 1300;
-  const imageHeight = 1500;
+// const textureLoader = new THREE.TextureLoader();
+// textureLoader.load('/images/joburg.png', (texture) => {
+//   const imageWidth = 1300;
+//   const imageHeight = 1500;
 
-  const imageGeometry = new THREE.PlaneGeometry(imageWidth, imageHeight);
-  const imageMaterial = new THREE.MeshBasicMaterial({
-    map: texture,
-      side: THREE.DoubleSide ,
-    transparent: true,
-    opacity: 0,
+//   const imageGeometry = new THREE.PlaneGeometry(imageWidth, imageHeight);
+//   const imageMaterial = new THREE.MeshBasicMaterial({
+//     map: texture,
+//       side: THREE.DoubleSide ,
+//     transparent: true,
+//     opacity: 0,
     
-  });
+//   });
 
-  const imageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
-  imageMesh.position.set(0, yMax -100 , 0); 
-  imageMesh.lookAt(camera.position); 
-imageMesh.rotation.z = Math.PI; 
+//   const imageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
+//   imageMesh.position.set(0, yMax -100 , 0); 
+//   imageMesh.lookAt(camera.position); 
+// imageMesh.rotation.z = Math.PI; 
+//   imageMeshRef.current = imageMesh;  
+//   scene.add(imageMesh);
+//       setImageLoaded(true);
+// });
+//         rendererRef.current.scene = scene;
+//     rendererRef.current.camera = camera;
 
-
-
-
-  imageMeshRef.current = imageMesh;  
-  scene.add(imageMesh);
-  console.log("Scene children after adding mesh:", imageMesh.visible);
- 
-
-    
-                
-
-      setImageLoaded(true);
-});
-        rendererRef.current.scene = scene;
-    rendererRef.current.camera = camera;
-
-     // The below code was commented out to avoid cluttering the scene with text sprites:
+// NOTE: The below code was commented out to avoid cluttering the scene with text sprites:
 
       // points.forEach(({ x, y, population, WardLabel }) => {
       //   let nearestIdx = 0;
@@ -318,16 +311,18 @@ if (suburbList && suburbList.length > 0) {
     };
   }, []);
 
-  useEffect(() => {
-    if (imageMeshRef.current) {
-      console.log('imageMeshRef.current', imageMeshRef.current.material.opacity);
-      imageMeshRef.current.material.opacity = showImage ? 1 : 0;
-      imageMeshRef.current.material.transparent = true;
-    }
-    if (rendererRef.current && sceneRef.current && cameraRef.current) {
-      rendererRef.current.render(sceneRef.current, cameraRef.current);
-    }
-  }, [showImage]);
+//NOTE: This useEffect was also for showing the map overlay:
+
+  // useEffect(() => {
+  //   if (imageMeshRef.current) {
+  //     console.log('imageMeshRef.current', imageMeshRef.current.material.opacity);
+  //     imageMeshRef.current.material.opacity = showImage ? 1 : 0;
+  //     imageMeshRef.current.material.transparent = true;
+  //   }
+  //   if (rendererRef.current && sceneRef.current && cameraRef.current) {
+  //     rendererRef.current.render(sceneRef.current, cameraRef.current);
+  //   }
+  // }, [showImage]);
 
 
 
@@ -350,7 +345,7 @@ if (suburbList && suburbList.length > 0) {
      
     <button
   onClick={() => setShowImage(prev => !prev)}
-   disabled={!imageLoaded}
+  //  disabled={!imageLoaded}
   style={{
     position: 'fixed',
     top: 60,
@@ -363,8 +358,6 @@ if (suburbList && suburbList.length > 0) {
 >
   {showImage ? 'Hide Johannesburg' : 'Show Johannesburg map'}
 </button>
- 
-      
 
       {showImage && (
         <>
