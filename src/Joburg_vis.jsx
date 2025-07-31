@@ -61,6 +61,7 @@ controls.minDistance = 1000;
 
     // Load GeoJSON data and create the terrain
     d3.json('/data/joburg_pop_25_july.json').then((geoData) => {
+      // used geoMercator to position the wards correctly on a 3D plane:
       const projection = geoMercator().fitExtent([[0, 0], [1000000, 1000000]], geoData);
 
       points = geoData.features.map((feature) => {
@@ -95,7 +96,7 @@ controls.minDistance = 1000;
 
       const vertices = geometry.attributes.position;
 
-      // Calculate population-based heights
+      // created a linear scale to map population values to terrain heights
     const popScale = d3.scaleLinear()
   .domain([d3.min(points, d => d.population), d3.max(points, d => d.population)])
   .range([0, 1000]);
@@ -136,12 +137,13 @@ for (let i = 0; i < vertices.count; i++) {
   const y = vertices.getY(i);
 
   const t = (y - yMin) / (yMax - yMin);
-  // Use d3.interpolateInferno for color mapping
+  // used d3.interpolateInferno for color mapping
   const color = new THREE.Color(d3.interpolateInferno(t));
   colors.push(color.r, color.g, color.b);
 }
 geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
+// in future I would like to play around with the material a bit more to make it more visually appealing
       const material = new THREE.MeshStandardMaterial({
         flatShading: true,
         metalness: 0.5,
