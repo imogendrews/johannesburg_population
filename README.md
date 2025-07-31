@@ -2,7 +2,7 @@
 
 ### **Task 05.01 - Johannesburg Population Density Map**
 
-You can find my final project in this GitHub repository. To run the code use npx vite, for some reason the npm script didn’t work for me. You can read more about the background of my project on the website itself.
+You can find my final project in [this Github Repo](https://github.com/imogendrews/johannesburg_population/tree/main). this GitHub repository. To run the code use npx vite, for some reason the npm script didn’t work for me. You can read more about the background of my project on the website itself.
 
 - **Summary**
 
@@ -10,9 +10,7 @@ For my final project, I created a heightmap-based population data visualization 
 
 I was inspired by Simon Sherrer’s series of heightmap-based population visualizations of various European countries (example shown below).
 
-<p align="center">
-<img src="/images/joburg.png" alt="task3 photo" width="400" />
-</p>
+![Simon Sherrer's population visualisation](./public/images/joburg.png)
 
 This project is also an example of *procedural generation*: I wrote the code to generate the visualization, then fed it the population data, allowing the program to determine the final form. While I made some aesthetic adjustments along the way, the "mountain range" itself was generated directly by the code using the data—it wasn't something I sculpted manually.
 
@@ -22,7 +20,7 @@ Concept
 
 - **Implementation**
 
-I decided to use a combination of [D3.js](http://d3.js/) and [Three.js](http://three.js/) for my project. I had initially planned to use Unreal Engine, but as the idea developed, I realized I wanted the final result to be a small, interactive website that anyone could easily access. Unreal, while powerful, wasn’t the best fit for this goal.
+I decided to use a combination of D3.js and Three.js for my project. I had initially planned to use Unreal Engine, but as the idea developed, I realized I wanted the final result to be a small, interactive website that anyone could easily access. Unreal, while powerful, wasn’t the best fit for this goal.
 
 Unfortunately, I couldn’t find any tutorials that directly explained how to make the kind of visualization I envisioned. So I relied on my existing knowledge of D3.js and Three.js from previous classes and projects—along with a lot of help from ChatGPT, which helped me understand the logic behind certain techniques and guided me through problem-solving.
 
@@ -40,13 +38,13 @@ To enhance interactivity, I implemented raycasting so users can hover over diffe
 
 The result is a mountainous 3D visualization where users can navigate using Three.js's  Orbit Controls. Viewers can click on different "mountains" using the raycaster, which triggers a pop-up displaying information about the selected ward—including its population size and the suburbs it encompasses. I also added an optional map that users can get using the button ‘Show map’ that appears next to the visualization to help users better understand Johannesburg's geography and the spatial context of the data representation. Below are some pictures of my project: 
 
-<p align="center">
-<img src="/images/joburg.png" alt="task3 photo" width="400" />
-</p>
+![Project picture 1](./public/images/joburg.png)
+![Project picture 2](./public/images/joburg.png)
+![Project picture 3](./public/images/joburg.png)
 
 - **Project Reflection & Discussion**
 
-Learning how to do a visualisation like this was great, and I am happy I was also able to learn a bit more about QGIS, D3.js and Three.js.  I did struggle with understanding how to put everything together due to there not being any tutorials on this exact implementation so it took more time that what was suggested but I feel like that was time well spent. I really wanted to make the optional map hover over the terrain and adjust its size according to the size of the map but I spent a whole day trying to do this and eventually gave up. I kept the methods I tried to use in my code in order to look into it in the future. I think in general there are a few small  things I would change with more time. I would cut down the amount of suburbs that are displayed in the pop ups and think about how to explain the project better. I would have also liked to played around with the ‘look’ of the mountains a bit more  and will definately work on that in the future. 
+Learning how to do a visualisation like this was great, and I am happy I was also able to learn a bit more about QGIS, D3.js and Three.js.  I did struggle with understanding how to put everything together due to there not being any tutorials on this exact implementation so it took more time that what was suggested but I feel like that was time well spent. I really wanted to make the optional map hover over the terrain and adjust its size according to the size of the map but I spent a whole day trying to do this and eventually gave up. I kept the methods I tried to use in my code in order to look into it in the future. I think in general there are a few small  things I would change with more time. I would cut down the amount of suburbs that are displayed in the pop ups and think about how to explain the project better. I would have also liked to played around with the ‘look’ of the mountains a bit more  and will definately work on that in the future. My goal is to also make this website public so I will have to refine things a bit further before I do that. Certain things like when you flip over the object and try to look at the wards there you get stuck there and have to reload the page so I will definately work on that! 
 
 - **Lessons Learned**
 

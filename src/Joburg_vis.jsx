@@ -45,6 +45,8 @@ export default function JoburgVis() {
     controls.maxPolarAngle = Math.PI ;
     controls.minPolarAngle = 0;
     controls.dampingFactor = 0.05;
+    controls.maxDistance = 3000;
+controls.minDistance = 1000;
 
     // Lighting setup 
     scene.add(new THREE.AmbientLight(0xffffff));

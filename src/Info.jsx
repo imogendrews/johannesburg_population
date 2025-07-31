@@ -6,7 +6,7 @@ export default function Info() {
 
 <h3 style={{ fontWeight: 'bold' }}>How To</h3>
       <p>To use this visualization, simply navigate through the 3D terrain to explore the population distribution across different wards in Johannesburg. You can click on the terrain to get more information about a specific ward or click on 'Show Map'
-to toggle the visibility of the map overlay. The map provides a reference for understanding the geographical context of the population data. Below is an image of the map with the overlay directly ontop of it</p>
+to toggle the visibility of the map overlay. The map provides a reference for understanding the geographical context of the population data. Below is an image of the map with the overlay directly ontop of it:</p>
       <div style={{
         display: 'flex',
 
@@ -30,9 +30,9 @@ to toggle the visibility of the map overlay. The map provides a reference for un
       />
       </div>
 <p>
-  For those unfamiliar with Johannesburg, the city is marked by stark contrasts shaped by its complex history. The largest and most well-known townships include Soweto, Alexandra, Diepsloot, Orange Farm, and Lenasia—each with rich cultural significance and unique identities. Other major township areas such as Tembisa and Katlehong also play important roles in the city’s social fabric. These areas were historically formed under apartheid spatial planning and remain central to Johannesburg’s urban life today.  
+  For those unfamiliar with Johannesburg, the city is marked by stark contrasts shaped by its complex history. The largest and most well-known townships include Soweto, Alexandra, Diepsloot, Orange Farm, and Lenasia. Other major township areas such as Tembisa and Katlehong also play important roles in the city’s social fabric. These areas were historically formed under apartheid spatial planning and remain central to Johannesburg’s urban life today.  
   <br></br>
-  In contrast, the more affluent suburbs include Rosebank, Sandton, Parktown North, and Parkview, as well as areas like Houghton, Hyde Park, Bryanston, and Melrose Arch—known for their upscale homes, business districts, and leafy streets. These neighbourhoods highlight the city’s economic power and its ongoing evolution. 
+  In contrast, the more affluent suburbs include Rosebank, Sandton, Parktown North, and Parkview, as well as areas like Houghton, Hyde Park, Bryanston, and Melrose Arch—known for their upscale homes, business districts, and leafy streets. These neighbourhoods highlight the city’s economic power and its ongoing evolution. An interesting detail is that areas with higher population densities rise above the plane like mountains, while lower-density areas sink below it. You can rotate the visualization to view these sunken regions from underneath, offering a full sense of the population distribution.
 </p>
 
       <h3 style={{ fontWeight: 'bold' }}>Background</h3>
@@ -45,8 +45,9 @@ to toggle the visibility of the map overlay. The map provides a reference for un
 around two compartmentalised extremes: on the one hand, the spaces of affluence are healthy,
 functional and largely the exclusive preserve of the white upper- and middle-classes; on the
 other, the overcrowded spaces of con nement are distressed, dysfunctional and where the
-overwhelming majority of black urban residents live and work . . .’(as cited in Chirisa & Matamanda, 2019, p. 360). The two photos below illustrate this inequality: the first photo is of Rosebank, a wealthy suburb in Johannesburg, while the second photo shows a township called Soweto, which is a historically black residential area that often lacks basic services and infrastructure.
+overwhelming majority of black urban residents live and work . . .’(as cited in Chirisa & Matamanda, 2019, p. 360). 
 </p>
+<p>The two photos below illustrate this inequality: the first photo is of Rosebank, a wealthy suburb in Johannesburg, while the second photo shows a township called Soweto, which is a historically black residential area that often lacks basic services and infrastructure.</p>
 <div style={{
         display: 'flex',
         gap: '2em',
