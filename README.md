@@ -2,21 +2,20 @@
 
 ### **Task 05.01 - Johannesburg Population Density Map**
 
-You can find my final project in [this Github Repo](https://github.com/imogendrews/johannesburg_population/tree/main). this GitHub repository. To run the code use npx vite, for some reason the npm script didn’t work for me. You can read more about the background of my project on the website itself.
+You can find my final project in [this](https://github.com/imogendrews/johannesburg_population/tree/main) GitHub repository. To run the code use npx vite, for some reason the npm script didn’t work for me. You can read more about the background of my project on the website itself.
 
 - **Summary**
 
 For my final project, I created a heightmap-based population data visualization of Johannesburg. The lecture topic my project relates to is ‘abstraction’, which we explored in Session 1. I wanted to take population data—typically presented in tables or standard graphs—and transform it into something more artistic. The goal was to speak not only to the logical mind but also to the empathetic one.
 
-I was inspired by Simon Sherrer’s series of heightmap-based population visualizations of various European countries (example shown below).
+I was inspired by Simon Sherrer’s series of heightmap-based population visualizations of various European countries. Below is an example of his work:
 
 ![Simon Sherrer's population visualisation](./public/images/joburg.png)
 
-This project is also an example of *procedural generation*: I wrote the code to generate the visualization, then fed it the population data, allowing the program to determine the final form. While I made some aesthetic adjustments along the way, the "mountain range" itself was generated directly by the code using the data—it wasn't something I sculpted manually.
+This project is also an example of procedural generation in general since I wrote the code to generate the visualization, then fed it the population data, allowing the program to determine the final form. While I made some aesthetic adjustments along the way, the "mountain range" itself was generated directly by the code using the data—it wasn't something I sculpted manually.
 
 Having been born and raised in Johannesburg, I always knew the city was unequal—but I didn’t fully grasp the scale of this inequality until I left. When I came across Sherrer’s work, I immediately thought that this kind of visualization could be a powerful way for fellow Joburgers—and others—to viscerally understand the spatial realities of inequality in the city.
 
-Concept
 
 - **Implementation**
 
@@ -30,7 +29,7 @@ For the population data, I used a dataset from WorldPop, which provides global p
 
 I combined the two datasets using QGIS and exported them as a GeoJSON file, which I then imported into my project. To position the wards correctly on a 3D plane, I used D3’s ‘geoMercator’ projection, which works well with GeoJSON features. Each feature included a geometry object (in my case, a MultiPolygon), which contained coordinates outlining the shape of each ward. I used ‘geoCentroid’ to calculate the center point of each shape, which helped in positioning and assigning data.
 
-In Three.js, I created a plane geometry and applied  ‘inverse distance weighting’ to determine the height of each vertex based on nearby population data. To ensure a consistent and proportional mapping between population values and elevation, I used D3’s ‘scaleLinear’. The result is a smooth, heightmap-style elevation model of Johannesburg, where densely populated areas rise like mountains.
+In Three.js, I created a plane geometry and applied  ‘inverse distance weighting’ to determine the height of each vertex based on nearby population data. To ensure a consistent and proportional mapping between population values and elevation, I used D3’s ‘scaleLinear’. The result is a smooth, heightmap-style elevation model of Johannesburg, where densely populated areas rise like mountains and lower-density areas sink below the plane. At first I thought that it would be good to have everything above the plane but if I did that I would have to manipulate the visualisation too much and ultimately decided that this version was actually really visually impactful.
 
 To enhance interactivity, I implemented raycasting so users can hover over different wards and see details like suburb names and population. I also added a transparent map overlay of Johannesburg to help provide geographic context for viewers unfamiliar with the area.
 
