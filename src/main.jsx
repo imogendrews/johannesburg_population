@@ -5,7 +5,6 @@ import App from './App.jsx'
 
 const container = document.getElementById('root')
 
-// Store root globally so we don't recreate it
 if (!window._reactRoot) {
   window._reactRoot = createRoot(container)
 }

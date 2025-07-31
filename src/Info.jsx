@@ -6,7 +6,7 @@ export default function Info() {
 
 <h3 style={{ fontWeight: 'bold' }}>How To</h3>
       <p>To use this visualization, simply navigate through the 3D terrain to explore the population distribution across different wards in Johannesburg. You can click on the terrain to get more information about a specific ward or click on 'Show Map'
-to toggle the visibility of the map overlay. The map provides a reference for understanding the geographical context of the population data. Below is an image of the map with the overlay directly ontop of it:</p>
+to toggle the visibility of a map of Johannesburg. The map provides a reference for understanding the geographical context of the population data. Below is an image of the map with the overlay directly ontop of it:</p>
       <div style={{
         display: 'flex',
 
@@ -32,7 +32,7 @@ to toggle the visibility of the map overlay. The map provides a reference for un
 <p>
   For those unfamiliar with Johannesburg, the city is marked by stark contrasts shaped by its complex history. The largest and most well-known townships include Soweto, Alexandra, Diepsloot, Orange Farm, and Lenasia. Other major township areas such as Tembisa and Katlehong also play important roles in the city’s social fabric. These areas were historically formed under apartheid spatial planning and remain central to Johannesburg’s urban life today.  
   <br></br>
-  In contrast, the more affluent suburbs include Rosebank, Sandton, Parktown North, and Parkview, as well as areas like Houghton, Hyde Park, Bryanston, and Melrose Arch—known for their upscale homes, business districts, and leafy streets. These neighbourhoods highlight the city’s economic power and its ongoing evolution. An interesting detail is that areas with higher population densities rise above the plane like mountains, while lower-density areas sink below it. You can rotate the visualization to view these sunken regions from underneath, offering a full sense of the population distribution.
+  In contrast, the more affluent suburbs include Rosebank, Sandton, Parktown North, and Parkview, as well as areas like Houghton, Hyde Park, Bryanston, and Melrose Arch—known for their upscale homes, business districts, and leafy streets. An interesting detail is that areas with higher population densities rise above the plane like mountains, while lower-density areas sink below it. You can rotate the visualization to view these sunken regions from underneath, offering a full sense of the population distribution.
 </p>
 
       <h3 style={{ fontWeight: 'bold' }}>Background</h3>

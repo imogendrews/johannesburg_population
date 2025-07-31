@@ -358,7 +358,7 @@ if (suburbList && suburbList.length > 0) {
     cursor: 'pointer',
   }}
 >
-  {showImage ? 'Hide Johannesburg' : 'Show Johannesburg map'}
+  {showImage ? 'Hide Johannesburg map' : 'Show Johannesburg map'}
 </button>
 
       {showImage && (

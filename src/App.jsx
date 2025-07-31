@@ -41,7 +41,7 @@ function Nav() {
           cursor: 'pointer',
         }}
       >
-     {location.pathname === '/info' ? 'Back to Map' : 'Go to Info'}
+     {location.pathname === '/info' ? 'Back' : 'Go to Info'}
       </button>
     </>
   );
@@ -63,7 +63,6 @@ export default function App() {
 
 const container = document.getElementById('root');
 
-// Create a global variable to store the root outside of the window or container if needed
 let root = window._reactRoot;
 
 if (!root) {
